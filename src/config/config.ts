@@ -17,9 +17,10 @@ const required = (name: string) => {
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/seminari7';
 
-const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:4200';
 
 const SERVER_PORT = process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : 1337;
+const SERVER_ENV = process.env.NODE_ENV || 'development';
 
 // Secretos con los que se firman los tokens. Son dos distintos para que un refresh token
 // no sirva como access token ni al revés.
@@ -36,7 +37,8 @@ export const config = {
         url: MONGO_URL
     },
     server: {
-        port: SERVER_PORT
+        port: SERVER_PORT,
+        env: SERVER_ENV
     },
     cors: {
         origin: CORS_ORIGIN

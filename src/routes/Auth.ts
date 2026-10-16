@@ -1,15 +1,18 @@
-import express from 'express';
+import express from "express";
+import controller from "../controllers/Auth";
+import { Schemas, ValidateJoi } from "../middleware/Joi";
 
-import controller from '../controllers/Auth';
-
-import { Schemas, ValidateJoi } from '../middleware/Joi';
-
-// Rutas de autenticacion. Son publicas: no piden token (refresh se autentica con su propio
-// refresh token, que va en el body). Cada una valida el body con Joi y llama a su controlador.
 const router = express.Router();
-router.post('/register', ValidateJoi(Schemas.auth.register), controller.register);
-router.post('/login', ValidateJoi(Schemas.auth.login), controller.login);
-router.post('/refresh', ValidateJoi(Schemas.auth.refresh), controller.refresh);
+
+router.post(
+  "/register",
+  ValidateJoi(Schemas.auth.register),
+  controller.register,
+);
+router.post("/login", ValidateJoi(Schemas.auth.login), controller.login);
+router.post("/refresh", controller.refresh); // Quitamos ValidateJoi porque ya no viene en el body
+router.post("/logout", controller.logout); // Esta es la nueva ruta de logout
+
 export = router;
 
 // Documentacion de Swagger de las tres rutas.

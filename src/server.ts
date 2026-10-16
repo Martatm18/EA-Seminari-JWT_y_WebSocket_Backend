@@ -1,6 +1,7 @@
 import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 import { config } from './config/config';
 import { Cors } from './middleware/Cors';
 import Logging from './library/Logging';
@@ -31,6 +32,7 @@ const StartServer = () => {
 
     router.use(express.urlencoded({ extended: true }));
     router.use(express.json());
+    router.use(cookieParser());
 
     /** CORS */
     router.use(Cors);
