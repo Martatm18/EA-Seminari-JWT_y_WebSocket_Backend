@@ -4,14 +4,10 @@ import { Schemas, ValidateJoi } from "../middleware/Joi";
 
 const router = express.Router();
 
-router.post(
-  "/register",
-  ValidateJoi(Schemas.auth.register),
-  controller.register,
-);
-router.post("/login", ValidateJoi(Schemas.auth.login), controller.login);
-router.post("/refresh", controller.refresh); // Quitamos ValidateJoi porque ya no viene en el body
-router.post("/logout", controller.logout); // Esta es la nueva ruta de logout
+router.post("/register", ValidateJoi(Schemas.auth.register), controller.register);// Aquesta és la nova ruta de registre
+router.post("/login", ValidateJoi(Schemas.auth.login), controller.login); // Aquesta és la nova ruta de login
+router.post("/refresh", controller.refresh); // Aquesta és la nova ruta de refresh
+router.post("/logout", controller.logout); // Aquesta és la nova ruta de logout
 
 export = router;
 

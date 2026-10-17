@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
-import cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser'; // permet llegir cookies en les peticions HTTP
 import { config } from './config/config';
 import { Cors } from './middleware/Cors';
 import Logging from './library/Logging';
@@ -32,7 +32,7 @@ const StartServer = () => {
 
     router.use(express.urlencoded({ extended: true }));
     router.use(express.json());
-    router.use(cookieParser());
+    router.use(cookieParser()); //registrem el middleware de cookie-parser per poder llegir cookies en les peticions HTTP
 
     /** CORS */
     router.use(Cors);
