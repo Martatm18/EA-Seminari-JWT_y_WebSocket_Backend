@@ -1,3 +1,26 @@
+# Enllaç Vídeo Explicació Exercici Seminari JWT y WebSocket: 
+# Documentació:
+**1. Referències dels materials consultats**
+- Repositoris del seminari.
+- Els vídeos proposats.
+- Explicació de classe.
+  
+**2. Detall de l'ús de la IA generativa**
+Eina i model d'IA usat: Gemini (Google) / ChatGPT (OpenAI).
+**Registre d'usos:**
+- **Registre 1:** Sincronització de l'Interceptor HTTP amb el Refresh Asíncron **(Frontend)**:
+  - **Prompt literal:** Com puc configurar el HttpInterceptor d'Angular perquè, si una petició falla amb 401, capturi l'error, llanci un refresh silenciós usant credencials de cookie, actualitzi la Signal del token i reintenti la petició original sense entrar en un bucle infinit?
+  - **Incoherències detectades en la resposta:** La IA em va donar un codi una mica antic basat en operadors de RxJS que ja no s'acaben de portar bé a Angular 18, i a més no contemplava què passava si la petició de refresh que fallava era ella mateixa, la qual cosa em bloquejava l'app i em creava un bucle de peticions infinites.
+  - **Solució / adaptació manual:** He hagut de netejar el codi i adaptar-lo manualment usant l'operador switchMap modern, a més d'afegir un condicional simple al catchError perquè comprovi si l'error ve de la ruta de /refresh, si és així, directament faig logout per evitar el bucle.
+- **Registre 2:** Gestió de Cookies Creuades i CORS en Desenvolupament Local **(Backend i Frontend)**:
+  - **Prompt literal:** Tinc el frontend a localhost:4200 i el backend a localhost:3000. En fer login, el navegador rebutja  guardar o enviar la cookie HttpOnly. Com he de configurar CORS a Express i la petició HTTP a Angular?
+  - **Incoherències detectades en la resposta:** La IA em va dir que posés un asterisc (origin: '*') al CORS d'Express per anar més ràpid. El problema és que els navegadors moderns bloquegen automàticament l'enviament de cookies si l'origen té un asterisc en comptes d'una URL concreta.
+  - **Solució / adaptació manual:** He hagut de corregir-ho a mà posant l'origen exacte del client (http://localhost:4200) i assegurar-me de marcar credentials, true al servidor i afegir { withCredentials: true } a les peticions HTTP d'Angular perquè el navegador acceptés enviar la cookie.
+- **Registre 3:** Coincidència de Metadades en la Destrucció de Cookies al logout **(Backend)**
+  - **Prompt literal:** En fer logout a Express crido a res.clearCookie('refreshToken'), però la cookie continua apareixent al navegador. Per què no s'esborra?
+  - **Incoherències detectades en la resposta:** La IA em va dir simplement que fes res.clearCookie('refreshToken') i ja està, sense tenir en compte que com que havíem creat la cookie amb un path restringit i paràmetres concrets, el navegador s'unia a la regla i ignorava l'esborrat si no li passaves exactament les mateixes dades.
+  - **Solució / adaptació manual:** He hagut de crear una funció petita al controlador anomenada getCookieOptions() per reutilitzar exactament la mateixa configuració tant al login com al logout, aconseguint així que el navegador l'esborrés de veritat.
+  
 # Seminari 7: backend con JWT y WebSockets
 
 API REST con dos recursos, **autores** y **libros**, organizada en capas (rutas, middleware,
