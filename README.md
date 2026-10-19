@@ -1,5 +1,5 @@
 # Enllaç Vídeo Explicació Exercici Part JWT Seminari JWT y WebSocket: https://drive.google.com/file/d/1QR9e3XDireheqxeiN17eZUStgacC3Vg4/view?usp=sharing
-# Enllaç Vídeo Explicació Exercici Part WebSocket Seminari JWT y WebSocket: 
+# Enllaç Vídeo Explicació Exercici Part WebSocket Seminari JWT y WebSocket: https://drive.google.com/file/d/17LmOIJjV_t_dvsg25Ybz0vfpakzG6X7-/view?usp=sharing
 
 # Documentació:
 **1. Referències dels materials consultats**
