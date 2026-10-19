@@ -49,6 +49,19 @@ export interface ChatMessagePayload {
     text: string;
 }
 
+// Estado visible del usuario en el chat.
+export type ChatUserStatus = 'online' | 'busy' | 'invisible';
+
+// Datos que el cliente envía para cambiar su estado de presencia.
+export interface ChatStatusPayload {
+    status: ChatUserStatus;
+}
+
+export interface OnlineUser {
+    id: string;
+    status: ChatUserStatus;
+}
+
 // Un mensaje tal como lo envía el servidor, en chat:message y dentro de chat:history.
 // El usuario llega con su nombre para que el frontend pueda mostrarlo.
 export interface ChatMessage {
@@ -68,15 +81,16 @@ export interface ChatError {
 export interface ClientToServerEvents {
     'chat:join': (payload: ChatJoinPayload) => void;
     'chat:message': (payload: ChatMessagePayload) => void;
+    'chat:status': (payload: ChatStatusPayload) => void;
 }
 
-// Eventos que el servidor envía al cliente (socket.emit aquí, socket.on en el frontend).
+// Eventos que el cliente puede recibir del servidor.
 export interface ServerToClientEvents {
     'chat:history': (messages: ChatMessage[]) => void;
     'chat:message': (message: ChatMessage) => void;
     'chat:error': (error: ChatError) => void;
-    // Lista de ids de los usuarios con el chat abierto; se envía a todos cada vez que alguien entra o sale
-    'users:online': (userIds: string[]) => void;
+    'chat:status': (status: ChatUserStatus) => void;
+    'users:online': (users: OnlineUser[]) => void;
 }
 
 // Lo que el middleware SocketAuth guarda en cada conexión (socket.data).

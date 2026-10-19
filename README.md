@@ -347,8 +347,9 @@ con `on`.
 | `chat:history` | Servidor, solo a quien entra | Lista de mensajes | Los 50 últimos de la sala, del más antiguo al más nuevo |
 | `chat:message` | Cliente | `{ room, text }` | El servidor lo guarda en MongoDB y lo reenvía a la sala |
 | `chat:message` | Servidor, a toda la sala | Un mensaje | Le llega a todos los que están en la sala, también a quien lo escribió |
+| `chat:status` | Cliente | `{ status }` | Cambia el estado de presencia del usuario: `online`, `busy` o `invisible` |
 | `chat:error` | Servidor, a un cliente | `{ message }` | Algo no se ha podido hacer (sala no permitida, mensaje vacío...) |
-| `users:online` | Servidor, a todos | Lista de ids | Quién tiene el chat abierto. Se envía cada vez que alguien entra o sale |
+| `users:online` | Servidor, a todos | Lista de `{ id, status }` | Quién tiene el chat abierto y en qué estado está. Se envía cada vez que alguien entra, sale o cambia su presencia |
 
 Un mensaje del servidor tiene esta forma: `{ _id, room, user: { _id, name }, text, timestamp }`.
 
@@ -370,7 +371,7 @@ Hay tres niveles de chat, según el nombre de la sala:
 | Directo | `direct:<idA>:<idB>`, con los dos ids ordenados | Solo esos dos usuarios |
 
 Para saber quién está activo, el servidor lleva en memoria los usuarios con el chat abierto (cuenta sus sockets, por si
-tienen varias pestañas) y avisa a todos con `users:online` cada vez que alguien entra o sale. No se guarda en MongoDB.
+tienen varias pestañas) y avisa a todos con `users:online` cada vez que alguien entra, sale o cambia su estado de presencia. La lista incluye a los usuarios conectados y sus estados visibles (`online` o `busy`); quien está `invisible` no aparece en la lista y se ve como desconectado. No se guarda en MongoDB.
 
 Los ids se ordenan para que los dos usuarios generen el mismo nombre de sala sin ponerse de acuerdo.
 `GET /users` da la lista de usuarios (solo id y nombre) para elegir con quién hablar. El servidor

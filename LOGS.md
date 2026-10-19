@@ -32,8 +32,9 @@ Lo que backend y frontend tienen que cumplir igual. Si algo de aquí cambia, se 
     `Authentication error`.
   - Salas: `general`, `group:<nombre>` y `direct:<idA>:<idB>` (los dos ids ordenados; solo entran esos dos usuarios). Cualquier otro nombre se rechaza con `chat:error`.
   - Del cliente al servidor: `chat:join` con `{ room }` y `chat:message` con `{ room, text }` (de 1 a 2000 caracteres; hay que haber entrado antes en la sala).
+  - Del cliente al servidor: `chat:status` con `{ status }` (`online`, `busy` o `invisible`).
   - Del servidor al cliente: `chat:history` (solo a quien entra: los 50 últimos mensajes de la sala, del más antiguo al más nuevo), `chat:message` (a toda la sala, también a quien lo
-    escribió), `chat:error` con `{ message }` y `users:online` (a todos, cada vez que alguien abre o cierra el chat: la lista de ids de los usuarios conectados).
+    escribió), `chat:error` con `{ message }` y `users:online` (a todos, cada vez que alguien abre o cierra el chat o cambia su presencia: lista de `{ id, status }`; los usuarios `invisible` no aparecen, como si estuvieran desconectados).
   - Un mensaje es `{ _id, room, user: { _id, name }, text, timestamp }`.
   - `GET /users` (con sesión, cualquier rol) responde `{ users: [{ _id, name }] }`, ordenados por nombre, para elegir con quién hablar en el chat directo.
 - **Usuario con sesión**: `GET /users/me` (con sesión, cualquier rol) responde `{ user: { _id, name, email, role } }`, a partir del token (`req.user`).
@@ -168,14 +169,6 @@ el servidor lo emite a los demás.
   2000 caracteres, con una sala fuera del contrato, con los ids de un directo sin ordenar y al intentar entrar o escribir en un directo ajeno. Antes de la corrección, esas dos últimas
   daban acceso al historial privado. Además, el chat probado en el navegador con dos usuarios a la vez (ver la bitácora del frontend).
 
-### 2026-10-05 · Usuarios conectados en el chat
-
-- Recomendación de los profesores: ver quién está activo. El servidor apunta en memoria los usuarios con el chat abierto (`Map` de id de usuario → número de sockets, para que
-  cerrar una de dos pestañas no lo desconecte) y emite a todos `users:online` con la lista de ids cada vez que alguien entra o sale. No se guarda en MongoDB: si el servidor se
-  reinicia, la lista se rehace con las reconexiones. "Conectado" significa "con el chat abierto", porque el socket solo vive en la página del chat.
-- Evento añadido a `ServerToClientEvents`, al Contrato de los dos LOGS.md y a la tabla de eventos del README.
-- Validación ejecutada: `npm run build` y `npm run lint` sin errores; prueba en el navegador con dos usuarios descrita en la bitácora del frontend.
-
 ### 2026-10-10 · Rutas protegidas en cada router, interfaces en models/ y GET /users/me
 
 Revisión de un profesor sobre el código del backend:
@@ -190,4 +183,4 @@ Revisión de un profesor sobre el código del backend:
   controller pasa a llamar al service, como en autores y libros.
 - El comportamiento de la API no cambia. Validación: `npm run build` y `npm run lint` sin errores; 35 pruebas con curl (las diez rutas de autores y libros dan 401 sin token y 403
   como `user`; como `admin`, 200, y la validación se ejecuta después de la autenticación; `/users` y `/users/me` con y sin token, y `/users/me` devuelve el usuario de cada token)
-  y 6 pruebas del chat con `socket.io-client` (autenticación, `users:online`, mensajes y directo ajeno bloqueado).
+  y 6 pruebas del chat con `socket.io-client` (autenticación, mensajes y directo ajeno bloqueado).
